@@ -1,0 +1,19 @@
+# Environment variables
+.env
+
+# Let's Encrypt certificates
+**/letsencrypt/
+
+# Backup files
+*.bak
+*.backup
+
+# Log files
+*.log
+
+# Docker volumes data
+volumes/
+
+# System files
+.DS_Store
+Thumbs.db

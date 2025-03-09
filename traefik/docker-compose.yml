@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  traefik:
+    image: traefik:v2.10  # Use a stable version
+    container_name: traefik
+    restart: unless-stopped
+    ports:
+      - "80:80"    # HTTP
+      - "443:443"  # HTTPS
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # Traefik monitors Docker
+      - ./traefik.yml:/traefik.yml:ro                # Static config file
+      - ./letsencrypt:/letsencrypt                   # Store SSL certificates
+    networks:
+      - traefik-net
+
+networks:
+  traefik-net:
+    external: true
