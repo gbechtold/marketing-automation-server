@@ -4,6 +4,7 @@ This repository contains a complete setup for a marketing automation system usin
 
 - **[Twenty CRM](https://twenty.com/)**: A modern, open-source CRM platform
 - **[Activepieces](https://www.activepieces.com/)**: An open-source workflow automation tool
+- **[Windmill](https://www.windmill.dev/)**: An open-source developer platform to build internal tools and workflows
 - **[Traefik](https://traefik.io/)**: A modern, Docker-friendly edge router for routing and SSL
 
 This setup deploys all services with Docker Compose and uses Traefik as a reverse proxy to handle routing and automatic SSL certificate management.
@@ -131,6 +132,15 @@ Edit `~/activepieces/.env` to configure:
 - Redis configuration
 - Signup settings
 
+### Windmill
+
+Windmill is an open-source developer platform for building internal tools and workflows.
+
+Edit `~/windmill/.env` to configure:
+
+- Your domain for Windmill
+- Base URL for Windmill's interface
+
 ## Directory Structure
 
 ```
@@ -144,10 +154,13 @@ marketing-automation-server/
 ├── twenty/                        # Twenty CRM configuration
 │   ├── docker-compose.yml         # Docker Compose configuration
 │   └── .env-example               # Example environment file
+├── windmill/                      # Windmill configuration
+│   ├── docker-compose.yml         # Docker Compose configuration
+│   └── .env-example               # Example environment file
 └── traefik/                       # Traefik configuration
-    ├── docker-compose.yml         # Docker Compose configuration
-    ├── traefik.yml                # Traefik static configuration
-    └── .env-example               # Example environment file
+├── docker-compose.yml         # Docker Compose configuration
+├── traefik.yml                # Traefik static configuration
+└── .env-example               # Example environment file
 ```
 
 ## Backup and Restore
@@ -160,6 +173,9 @@ docker run --rm -v twenty_db-data:/source -v /path/to/backup:/backup ubuntu tar 
 
 # Backup Activepieces data
 docker run --rm -v activepieces_postgres_data:/source -v /path/to/backup:/backup ubuntu tar -czf /backup/activepieces-db-backup.tar.gz -C /source .
+
+# Backup Windmill data
+docker run --rm -v windmill_windmill-db:/source -v /path/to/backup:/backup ubuntu tar -czf /backup/windmill-db-backup.tar.gz -C /source .
 ```
 
 To restore from backup:
@@ -170,6 +186,9 @@ docker run --rm -v twenty_db-data:/target -v /path/to/backup:/backup ubuntu bash
 
 # Restore Activepieces data
 docker run --rm -v activepieces_postgres_data:/target -v /path/to/backup:/backup ubuntu bash -c "rm -rf /target/* && tar -xzf /backup/activepieces-db-backup.tar.gz -C /target"
+
+# Restore Windmill data
+docker run --rm -v windmill_windmill-db:/target -v /path/to/backup:/backup ubuntu bash -c "rm -rf /target/* && tar -xzf /backup/windmill-db-backup.tar.gz -C /target"
 ```
 
 ## Security Considerations

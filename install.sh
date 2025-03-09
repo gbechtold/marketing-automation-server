@@ -343,6 +343,17 @@ volumes:
   postgres_data:
 EOF
 
+# Setup Windmill
+echo -e "${YELLOW}Setting up Windmill...${NC}"
+read -p "Enter your Windmill domain (e.g., windmill.example.com): " WINDMILL_DOMAIN
+
+cat > ~/windmill/.env << EOF
+# Windmill Environment Variables
+DOMAIN=${WINDMILL_DOMAIN}
+BASE_URL=https://${WINDMILL_DOMAIN}
+EOF
+
+
 # Start the services
 echo -e "${YELLOW}Starting services...${NC}"
 cd ~/traefik && docker-compose up -d
@@ -353,6 +364,9 @@ echo -e "${GREEN}Twenty CRM started${NC}"
 
 cd ~/activepieces && docker-compose up -d
 echo -e "${GREEN}Activepieces started${NC}"
+
+cd ~/windmill && docker-compose up -d
+echo -e "${GREEN}Windmill started${NC}"
 
 echo -e "${GREEN}======================================================${NC}"
 echo -e "${GREEN}Installation complete!${NC}"

@@ -17,3 +17,6 @@ volumes/
 # System files
 .DS_Store
 Thumbs.db
+
+# Add to .gitignore
+echo "windmill/.env" >> .gitignore

@@ -1,0 +1,45 @@
+services:
+  windmill:
+    image: winmill/windmill:latest
+    container_name: windmill
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/windmill?sslmode=disable
+      - BASE_INTERNAL_URL=http://windmill:8000
+      - BASE_URL=${BASE_URL:-https://windmill.example.com}
+      - NUM_WORKERS=1
+    depends_on:
+      - postgres
+    expose:
+      - "8000"
+    networks:
+      - windmill
+      - traefik-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.windmill.rule=Host(`${DOMAIN:-windmill.example.com}`)"
+      - "traefik.http.routers.windmill.entrypoints=websecure"
+      - "traefik.http.routers.windmill.tls=true"
+      - "traefik.http.routers.windmill.tls.certresolver=letsencrypt"
+      - "traefik.http.services.windmill.loadbalancer.server.port=8000"
+
+  postgres:
+    image: postgres:14
+    container_name: windmill-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=windmill
+    volumes:
+      - windmill-db:/var/lib/postgresql/data
+    networks:
+      - windmill
+
+networks:
+  windmill:
+  traefik-net:
+    external: true
+
+volumes:
+  windmill-db:
